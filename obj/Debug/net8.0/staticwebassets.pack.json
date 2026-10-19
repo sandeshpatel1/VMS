@@ -1,0 +1,37 @@
+{
+  "Files": [
+    {
+      "Id": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\js\\ui.js",
+      "PackagePath": "staticwebassets\\js\\ui.js"
+    },
+    {
+      "Id": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\uploads\\visitors\\.gitkeep",
+      "PackagePath": "staticwebassets\\uploads\\visitors\\.gitkeep"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.DwaarixVMS.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.DwaarixVMS.props",
+      "PackagePath": "build\\DwaarixVMS.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.DwaarixVMS.props",
+      "PackagePath": "buildMultiTargeting\\DwaarixVMS.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.DwaarixVMS.props",
+      "PackagePath": "buildTransitive\\DwaarixVMS.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

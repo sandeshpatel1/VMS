@@ -1,0 +1,96 @@
+@model DashboardVM
+@{
+    ViewData["Title"] = "Dashboard";
+    var isStaff = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Watchman);
+    var hour = DateTime.Now.Hour;
+    var greet = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+    var firstName = (User.Identity?.Name ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "";
+}
+<div class="page-head">
+    <div>
+        <h1>@greet, @firstName</h1>
+        <p class="sub">@DateTime.Now.ToString("dddd, dd MMMM yyyy")</p>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="stat"><b>@Model.Inside</b><span>Inside now</span></div>
+    <div class="stat"><b>@Model.TodayCount</b><span>Visitors today</span></div>
+    <div class="stat"><b>@Model.Pending</b><span>Waiting for approval</span></div>
+    <div class="stat"><b>@Model.Uncollected</b><span>Deliveries to collect</span></div>
+</div>
+
+<div class="tiles">
+@if (isStaff)
+{
+    <a class="tile t-blue" asp-controller="Visitors" asp-action="Create">@Html.Icon("user-plus")New visitor</a>
+    <a class="tile t-green" asp-controller="Visitors" asp-action="Index">@Html.Icon("clock")Visitor history</a>
+    <a class="tile t-orange" asp-controller="PreApprovals" asp-action="Index">@Html.Icon("check-square")Pre-approved (@Model.ActivePre)</a>
+    <a class="tile t-purple" asp-controller="Residents" asp-action="Index">@Html.Icon("book")Resident directory</a>
+    <a class="tile t-pink" asp-controller="Deliveries" asp-action="Create">@Html.Icon("truck")Delivery entry</a>
+    <a class="tile t-red" asp-controller="Emergency" asp-action="Index">@Html.Icon("alert")Emergency</a>
+    @if (User.IsInRole(Roles.Admin))
+    {
+        <a class="tile t-slate" asp-controller="Users" asp-action="Index">@Html.Icon("shield")Users and roles</a>
+        <a class="tile t-slate" asp-controller="Reports" asp-action="Index">@Html.Icon("chart")Reports</a>
+    }
+}
+else
+{
+    <a class="tile t-blue" asp-controller="PreApprovals" asp-action="Create">@Html.Icon("check-square")Pre-approve a visitor</a>
+    <a class="tile t-green" asp-controller="Visitors" asp-action="Index">@Html.Icon("clock")My visitors</a>
+    <a class="tile t-orange" asp-controller="PreApprovals" asp-action="Index">@Html.Icon("users")Pre-approved (@Model.ActivePre)</a>
+    <a class="tile t-pink" asp-controller="Deliveries" asp-action="Index">@Html.Icon("truck")My deliveries</a>
+    <a class="tile t-red" asp-controller="Emergency" asp-action="Index">@Html.Icon("alert")Emergency</a>
+    <a class="tile t-purple" asp-controller="Notifications" asp-action="Index">@Html.Icon("bell")Notifications</a>
+}
+</div>
+
+@if (Model.PendingList.Any())
+{
+    <div class="section-title"><h2>Waiting for approval</h2><a asp-controller="Visitors" asp-action="Index" asp-route-status="@VisitStatus.Pending">See all</a></div>
+    <div class="list">
+    @foreach (var v in Model.PendingList)
+    {
+        <div class="row">
+            <partial name="_Avatar" model="v" />
+            <a class="row-main" asp-controller="Visitors" asp-action="Details" asp-route-id="@v.Id">
+                <strong>@v.VisitorName</strong>
+                <span>@v.Purpose, flat @v.Resident.FlatNo, @Ui.Tm(v.CreatedAt)</span>
+            </a>
+            <div class="row-end"><partial name="_Status" model="v.Status" /></div>
+            <div class="row-actions">
+                <form asp-controller="Visitors" asp-action="Decide" method="post">
+                    <input type="hidden" name="id" value="@v.Id" /><input type="hidden" name="approve" value="true" /><input type="hidden" name="returnUrl" value="/" />
+                    <button class="btn ok sm" type="submit">@Html.Icon("check")@(isStaff ? "Approve for resident" : "Approve")</button>
+                </form>
+                <form asp-controller="Visitors" asp-action="Decide" method="post">
+                    <input type="hidden" name="id" value="@v.Id" /><input type="hidden" name="approve" value="false" /><input type="hidden" name="returnUrl" value="/" />
+                    <button class="btn danger sm" type="submit">@Html.Icon("x")Reject</button>
+                </form>
+            </div>
+        </div>
+    }
+    </div>
+}
+
+@if (isStaff && Model.InsideList.Any())
+{
+    <div class="section-title"><h2>Inside the society</h2><a asp-controller="Visitors" asp-action="Index" asp-route-status="@VisitStatus.CheckedIn">See all</a></div>
+    <div class="list">
+    @foreach (var v in Model.InsideList)
+    {
+        <div class="row">
+            <partial name="_Avatar" model="v" />
+            <a class="row-main" asp-controller="Visitors" asp-action="Details" asp-route-id="@v.Id">
+                <strong>@v.VisitorName</strong>
+                <span>Flat @v.Resident.FlatNo, in at @Ui.Tm(v.InTime)</span>
+            </a>
+            <form asp-controller="Visitors" asp-action="CheckOut" method="post">
+                <input type="hidden" name="id" value="@v.Id" /><input type="hidden" name="returnUrl" value="/" />
+                <button class="btn ghost sm" type="submit">Check out</button>
+            </form>
+        </div>
+    }
+    </div>
+}

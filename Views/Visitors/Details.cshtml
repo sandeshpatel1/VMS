@@ -1,0 +1,56 @@
+@model Visitor
+@{
+    ViewData["Title"] = "Visitor details";
+    var isStaff = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Watchman);
+    var hasPass = Model.Status is VisitStatus.Approved or VisitStatus.CheckedIn or VisitStatus.CheckedOut;
+    var canCancel = Model.Status is VisitStatus.Pending or VisitStatus.Approved;
+}
+<div class="page-head">
+    <h1>@Model.VisitorName</h1>
+    <partial name="_Status" model="Model.Status" />
+</div>
+
+<div class="card">
+    <div class="detail">
+        @if (!string.IsNullOrEmpty(Model.PhotoPath)) { <img class="avatar xl" src="@Model.PhotoPath" alt="Photo of @Model.VisitorName" /> }
+        else { <div class="avatar xl" aria-hidden="true">@Ui.Initials(Model.VisitorName)</div> }
+        <dl class="kv">
+            <dt>Visitor ID</dt><dd>@Model.VisitorCode</dd>
+            <dt>Mobile</dt><dd><a href="tel:@Model.Mobile">@Model.Mobile</a></dd>
+            <dt>Purpose</dt><dd>@Model.Purpose</dd>
+            <dt>Visiting</dt><dd>@Model.Resident.FlatNo, @Model.Resident.FullName</dd>
+            <dt>Expected</dt><dd>@Ui.Dt(Model.ExpectedTime)</dd>
+            <dt>In time</dt><dd>@Ui.Dt(Model.InTime)</dd>
+            <dt>Out time</dt><dd>@Ui.Dt(Model.OutTime)</dd>
+            <dt>Valid till</dt><dd>@Ui.Dt(Model.ValidTill)</dd>
+            <dt>Status</dt><dd>@Ui.StatusLabel(Model.Status)</dd>
+            @if (!string.IsNullOrWhiteSpace(Model.Remarks)) { <dt>Remarks</dt><dd>@Model.Remarks</dd> }
+            @if (isStaff) { <dt>Logged by</dt><dd>@Model.CreatedBy.FullName</dd> }
+        </dl>
+    </div>
+
+    <div class="actions">
+        @if (Model.Status == VisitStatus.Pending)
+        {
+            <form asp-action="Decide" method="post"><input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="approve" value="true" />
+                <button class="btn ok" type="submit">@Html.Icon("check")@(isStaff ? "Approve for resident" : "Approve")</button></form>
+            <form asp-action="Decide" method="post"><input type="hidden" name="id" value="@Model.Id" /><input type="hidden" name="approve" value="false" />
+                <button class="btn danger" type="submit">@Html.Icon("x")Reject</button></form>
+        }
+        @if (isStaff && Model.Status == VisitStatus.Approved)
+        {
+            <form asp-action="CheckIn" method="post"><input type="hidden" name="id" value="@Model.Id" /><button class="btn ok" type="submit">@Html.Icon("log-out")Check in</button></form>
+        }
+        @if (isStaff && Model.Status == VisitStatus.CheckedIn)
+        {
+            <form asp-action="CheckOut" method="post"><input type="hidden" name="id" value="@Model.Id" /><button class="btn ok" type="submit">@Html.Icon("log-out")Check out</button></form>
+        }
+        @if (hasPass) { <a class="btn ghost" asp-action="Pass" asp-route-id="@Model.Id">View pass</a> }
+        @if (canCancel)
+        {
+            <form asp-action="Cancel" method="post" data-confirm="Cancel this entry?"><input type="hidden" name="id" value="@Model.Id" />
+                <button class="btn danger" type="submit">Cancel entry</button></form>
+        }
+        <a class="btn ghost" asp-action="Index">Back to history</a>
+    </div>
+</div>

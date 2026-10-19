@@ -1,0 +1,36 @@
+@model List<Resident>
+@{
+    ViewData["Title"] = "Resident directory";
+    var isAdmin = User.IsInRole(Roles.Admin);
+}
+<div class="page-head">
+    <h1>Resident directory</h1>
+    @if (isAdmin) { <a class="btn primary" asp-action="Create">@Html.Icon("plus")Add resident</a> }
+</div>
+<form method="get" class="filters" style="grid-template-columns:1fr auto">
+    <label class="search">@Html.Icon("search")<input type="search" name="q" value="@ViewBag.Q" placeholder="Search by flat, name or mobile" aria-label="Search residents" /></label>
+    <button class="btn ghost" type="submit">Search</button>
+</form>
+@if (!Model.Any())
+{
+    <div class="card empty"><p>No residents found.</p></div>
+}
+else
+{
+    <div class="list">
+    @foreach (var r in Model)
+    {
+        <div class="row">
+            <div class="avatar" aria-hidden="true">@Ui.Initials(r.FullName)</div>
+            <div class="row-main">
+                <strong>@(r.FlatNo + ", " + r.FullName) @if (!r.IsActive) { <span class="pill muted" style="margin-left:.4rem">Inactive</span> }</strong>
+                <span>@(r.Mobile + (string.IsNullOrEmpty(r.Email) ? "" : ", " + r.Email))</span>
+            </div>
+            <div class="row-end">
+                <a class="btn ghost sm" href="tel:@r.Mobile" aria-label="Call @r.FullName">@Html.Icon("phone")Call</a>
+                @if (isAdmin) { <a class="btn ghost sm" asp-action="Edit" asp-route-id="@r.Id">Edit</a> }
+            </div>
+        </div>
+    }
+    </div>
+}

@@ -1,0 +1,23 @@
+@model DeliveryVM
+@{ ViewData["Title"] = "Delivery entry"; }
+<div class="page-head"><h1>Delivery entry</h1></div>
+<form asp-action="Create" method="post" class="card form wide">
+    <div asp-validation-summary="ModelOnly" class="form-error"></div>
+    <div class="two">
+        <div class="field"><label asp-for="PersonName"></label><input asp-for="PersonName" autocomplete="off" placeholder="Enter name" /><span asp-validation-for="PersonName"></span></div>
+        <div class="field"><label asp-for="Mobile"></label><input asp-for="Mobile" type="tel" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="10-digit mobile number" /><span asp-validation-for="Mobile"></span></div>
+    </div>
+    <div class="field">
+        <label asp-for="Company"></label>
+        <select asp-for="Company" asp-items="@(new SelectList(Lists.Companies))"><option value="">Select company</option></select>
+        <span asp-validation-for="Company"></span>
+    </div>
+    <div class="field">
+        <label asp-for="ResidentId"></label>
+        <label class="search">@Html.Icon("search")<input type="search" data-filter-select="#ResidentId" placeholder="Type a flat number or name to narrow the list" aria-label="Filter residents" /></label>
+        <select asp-for="ResidentId" asp-items="@((IEnumerable<SelectListItem>)ViewBag.Residents)"><option value="">Select resident</option></select>
+        <span asp-validation-for="ResidentId"></span>
+    </div>
+    <div class="field"><label asp-for="Remarks"></label><textarea asp-for="Remarks" placeholder="Optional"></textarea><span asp-validation-for="Remarks"></span></div>
+    <div class="actions"><button class="btn primary" type="submit">Save entry</button><a class="btn ghost" asp-action="Index">Cancel</a></div>
+</form>

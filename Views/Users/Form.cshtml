@@ -1,0 +1,35 @@
+@model UserVM
+@{ ViewData["Title"] = Model.Id == 0 ? "Add user" : "Edit user"; }
+<div class="page-head"><h1>@ViewData["Title"]</h1></div>
+<form asp-action="Save" method="post" class="card form wide" autocomplete="off">
+    <div asp-validation-summary="ModelOnly" class="form-error"></div>
+    <input asp-for="Id" type="hidden" />
+    <div class="two">
+        <div class="field"><label asp-for="FullName"></label><input asp-for="FullName" /><span asp-validation-for="FullName"></span></div>
+        <div class="field"><label asp-for="Username"></label><input asp-for="Username" autocomplete="off" /><span asp-validation-for="Username"></span></div>
+    </div>
+    <div class="two">
+        <div class="field">
+            <label asp-for="Password">@(Model.Id == 0 ? "Password" : "New password")</label>
+            <input asp-for="Password" type="password" autocomplete="new-password" />
+            <span asp-validation-for="Password"></span>
+            <small class="hint">@(Model.Id == 0 ? "8 or more characters, with a letter and a number." : "Leave empty to keep the current password.")</small>
+        </div>
+        <div class="field"><label asp-for="Mobile"></label><input asp-for="Mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="Optional" /><span asp-validation-for="Mobile"></span></div>
+    </div>
+    <div class="two">
+        <div class="field">
+            <label asp-for="Role"></label>
+            <select asp-for="Role" asp-items="@(new SelectList(Roles.All))"></select>
+            <span asp-validation-for="Role"></span>
+        </div>
+        <div class="field">
+            <label asp-for="ResidentId"></label>
+            <select asp-for="ResidentId" asp-items="@((IEnumerable<SelectListItem>)ViewBag.Residents)"><option value="">Not linked</option></select>
+            <span asp-validation-for="ResidentId"></span>
+            <small class="hint">Required for the Resident role.</small>
+        </div>
+    </div>
+    <label class="check"><input asp-for="IsActive" type="checkbox" /> Account is active</label>
+    <div class="actions"><button class="btn primary" type="submit">Save user</button><a class="btn ghost" asp-action="Index">Cancel</a></div>
+</form>

@@ -1,0 +1,129 @@
+@inject AppDbContext Db
+@{
+    var authed = User.Identity?.IsAuthenticated == true;
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var unread = 0;
+    var emergency = false;
+    var role = "";
+    if (authed)
+    {
+        var uid = User.UserId();
+        unread = await Db.Notifications.CountAsync(n => n.UserId == uid && !n.IsRead);
+        emergency = await Db.Emergencies.AnyAsync(e => !e.IsResolved);
+        role = User.IsInRole(Roles.Admin) ? Roles.Admin : User.IsInRole(Roles.Watchman) ? Roles.Watchman : Roles.Resident;
+    }
+    var userName = User.Identity?.Name ?? "";
+    var isStaff = role == Roles.Admin || role == Roles.Watchman;
+    string On(string c, string? a = null) => controller == c && (a == null || action == a) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#EDF1F9" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('dwaarix-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.dataset.theme = t;
+            } catch (e) { document.documentElement.dataset.theme = 'light'; }
+        })();
+    </script>
+    <title>@ViewData["Title"] - Dwaarix</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="@(authed ? "app" : "bare")">
+    <partial name="_Sprite" />
+    <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
+@if (authed)
+{
+    <div class="shell">
+        <div class="scrim" data-close-drawer></div>
+        <aside class="side" id="drawer" aria-label="Main navigation">
+            <a class="brand" asp-controller="Home" asp-action="Index"><span class="brand-mark">D</span>Dwaarix</a>
+            <nav class="nav">
+                <a class="@On("Home")" asp-controller="Home" asp-action="Index">@Html.Icon("home")Dashboard</a>
+                @if (isStaff)
+                {
+                    <a class="@On("Visitors", "Create")" asp-controller="Visitors" asp-action="Create">@Html.Icon("user-plus")New visitor</a>
+                }
+                <a class="@(controller == "Visitors" && action != "Create" ? "active" : "")" asp-controller="Visitors" asp-action="Index">@Html.Icon("clock")Visitor history</a>
+                <a class="@On("PreApprovals")" asp-controller="PreApprovals" asp-action="Index">@Html.Icon("check-square")Pre-approved</a>
+                <a class="@On("Deliveries")" asp-controller="Deliveries" asp-action="Index">@Html.Icon("truck")Deliveries</a>
+                @if (isStaff)
+                {
+                    <a class="@On("Residents")" asp-controller="Residents" asp-action="Index">@Html.Icon("book")Resident directory</a>
+                }
+                <a class="@On("Emergency")" asp-controller="Emergency" asp-action="Index">@Html.Icon("alert")Emergency</a>
+                <a class="@On("Notifications")" asp-controller="Notifications" asp-action="Index">@Html.Icon("bell")Notifications @if (unread > 0) { <span class="badge">@unread</span> }</a>
+                @if (role == Roles.Admin)
+                {
+                    <div class="nav-group">Administration</div>
+                    <a class="@On("Users")" asp-controller="Users" asp-action="Index">@Html.Icon("shield")Users and roles</a>
+                    <a class="@On("Reports")" asp-controller="Reports" asp-action="Index">@Html.Icon("chart")Reports</a>
+                }
+            </nav>
+            <div class="me">
+                <div class="me-name">@userName<small>@role</small></div>
+                <a class="me-link" asp-controller="Account" asp-action="ChangePassword">@Html.Icon("key")Change password</a>
+                <form asp-controller="Account" asp-action="Logout" method="post"><button class="me-link" type="submit">@Html.Icon("log-out")Sign out</button></form>
+            </div>
+        </aside>
+
+        <header class="appbar">
+            <button class="icon-btn menu-btn" type="button" data-open-drawer aria-label="Open menu">@Html.Icon("menu")</button>
+            <div class="appbar-title">@(ViewData["Title"] ?? "Dwaarix")</div>
+            <partial name="_ThemeToggle" />
+            <a class="icon-btn" asp-controller="Notifications" asp-action="Index" aria-label="Notifications">@Html.Icon("bell") @if (unread > 0) { <span class="dot"></span> }</a>
+            <span class="me-chip" title="@userName" aria-hidden="true">@Ui.Initials(userName)</span>
+        </header>
+
+        <main class="main" id="main">
+            @if (emergency)
+            {
+                <a class="sos" asp-controller="Emergency" asp-action="Index">@Html.Icon("alert")An emergency alert is active. Tap to see details.</a>
+            }
+            @if (TempData["Success"] is string ok)
+            {
+                <div class="toast ok" role="status">@Html.Icon("check")@ok</div>
+            }
+            @if (TempData["Error"] is string err)
+            {
+                <div class="toast bad" role="alert">@Html.Icon("alert")@err</div>
+            }
+            @RenderBody()
+        </main>
+
+        <nav class="tabbar" aria-label="Quick navigation">
+            <a class="@On("Home")" asp-controller="Home" asp-action="Index">@Html.Icon("home")<span>Home</span></a>
+            <a class="@(controller == "Visitors" && action != "Create" ? "active" : "")" asp-controller="Visitors" asp-action="Index">@Html.Icon("clock")<span>Visitors</span></a>
+            @if (isStaff)
+            {
+                <a class="tab-main @On("Visitors", "Create")" asp-controller="Visitors" asp-action="Create" aria-label="New visitor">@Html.Icon("plus")</a>
+            }
+            else
+            {
+                <a class="tab-main @On("PreApprovals", "Create")" asp-controller="PreApprovals" asp-action="Create" aria-label="Pre-approve a visitor">@Html.Icon("plus")</a>
+            }
+            <a class="@On("Notifications")" asp-controller="Notifications" asp-action="Index">@Html.Icon("bell")<span>Alerts</span> @if (unread > 0) { <i class="dot"></i> }</a>
+            <button type="button" data-open-drawer>@Html.Icon("menu")<span>More</span></button>
+        </nav>
+    </div>
+}
+else
+{
+    <div class="bare-tools"><partial name="_ThemeToggle" /></div>
+    <main class="bare-main">@RenderBody()</main>
+}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/ui.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

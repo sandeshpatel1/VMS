@@ -1,0 +1,43 @@
+@model List<Delivery>
+@{
+    ViewData["Title"] = "Deliveries";
+    var isStaff = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Watchman);
+    bool pendingOnly = ViewBag.PendingOnly == true;
+}
+<div class="page-head">
+    <h1>Deliveries</h1>
+    @if (isStaff) { <a class="btn primary" asp-action="Create">@Html.Icon("plus")Delivery entry</a> }
+</div>
+<form method="get" class="filters" style="grid-template-columns:1fr auto auto">
+    <label class="search">@Html.Icon("search")<input type="search" name="q" value="@ViewBag.Q" placeholder="Search by name, company or flat" aria-label="Search deliveries" /></label>
+    <label class="check"><input type="checkbox" name="pendingOnly" value="true" checked="@pendingOnly" /> Not collected</label>
+    <button class="btn ghost" type="submit">Apply</button>
+</form>
+@if (!Model.Any())
+{
+    <div class="card empty"><p>No deliveries to show.</p></div>
+}
+else
+{
+    <div class="list">
+    @foreach (var d in Model)
+    {
+        <div class="row">
+            <div class="avatar" aria-hidden="true">@Html.Icon("truck")</div>
+            <div class="row-main">
+                <strong>@d.Company, flat @d.Resident.FlatNo</strong>
+                <span>@d.PersonName, @d.Mobile</span>
+                <span>@("Arrived " + Ui.Dt(d.ArrivedAt) + (string.IsNullOrWhiteSpace(d.Remarks) ? "" : ". " + d.Remarks))</span>
+            </div>
+            <div class="row-end">
+                @if (d.CollectedAt == null) { <span class="pill pending">At gate</span> }
+                else { <span class="pill ok">Collected</span><span>@Ui.Tm(d.CollectedAt)</span> }
+            </div>
+            @if (isStaff && d.CollectedAt == null)
+            {
+                <div class="row-actions"><form asp-action="Collect" method="post"><input type="hidden" name="id" value="@d.Id" /><button class="btn ok sm" type="submit">@Html.Icon("check")Mark collected</button></form></div>
+            }
+        </div>
+    }
+    </div>
+}

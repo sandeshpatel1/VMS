@@ -1,0 +1,51 @@
+@model List<Notification>
+@{
+    ViewData["Title"] = "Notifications";
+    string Tone(string type) => type switch
+    {
+        "visitor-in" or "visitor-approved" or "pre-approved" => "background:var(--ok-bg);color:var(--ok)",
+        "visitor-out" or "visitor-rejected" or "visitor-cancelled" or "emergency" => "background:var(--bad-bg);color:var(--bad)",
+        "visitor-pending" => "background:var(--warn-bg);color:var(--warn)",
+        _ => "background:var(--field-hi);color:var(--brand)"
+    };
+    string Glyph(string type) => type switch
+    {
+        "delivery" => "truck",
+        "emergency" => "alert",
+        "pre-approved" => "check-square",
+        "visitor-out" or "visitor-rejected" or "visitor-cancelled" => "x",
+        "visitor-pending" => "clock",
+        _ => "check"
+    };
+}
+<div class="page-head">
+    <h1>Notifications</h1>
+    @if (Model.Any(n => !n.IsRead))
+    {
+        <form asp-action="MarkAllRead" method="post"><button class="btn ghost" type="submit">Mark all as read</button></form>
+    }
+</div>
+@if (!Model.Any())
+{
+    <div class="card empty"><p>You have no notifications yet. Visitor, delivery and emergency updates will show up here.</p></div>
+}
+else
+{
+    <div class="list">
+    @foreach (var n in Model)
+    {
+        <div class="note @(n.IsRead ? "" : "unread")">
+            <div class="note-ic" style="@Tone(n.Type)">@Html.Icon(Glyph(n.Type))</div>
+            <div>
+                <strong>@n.Title</strong>
+                <span class="msg">@n.Message</span><br />
+                <time datetime="@n.CreatedAt.ToString("s")">@Ui.Dt(n.CreatedAt)</time>
+            </div>
+            @if (!n.IsRead)
+            {
+                <form asp-action="MarkRead" method="post"><input type="hidden" name="id" value="@n.Id" /><button class="btn ghost sm" type="submit">Mark read</button></form>
+            }
+        </div>
+    }
+    </div>
+}

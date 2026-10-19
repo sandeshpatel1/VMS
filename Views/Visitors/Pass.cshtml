@@ -1,0 +1,28 @@
+@model Visitor
+@{
+    ViewData["Title"] = "Visitor pass";
+    var share = Uri.EscapeDataString(
+        $"Dwaarix visitor pass\nName: {Model.VisitorName}\nVisiting: {Model.Resident.FlatNo}\nValid till: {Ui.Dt(Model.ValidTill)}\nVisitor ID: {Model.VisitorCode}");
+}
+<div class="card pass">
+    <div class="pass-top">
+        <span class="logo-word" style="font-size:1.6rem">Dwaarix</span>
+        <strong>Society visitor pass</strong>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.PhotoPath)) { <img class="avatar xl" style="margin:0 auto" src="@Model.PhotoPath" alt="Photo of @Model.VisitorName" /> }
+    else { <div class="avatar xl" style="margin:0 auto" aria-hidden="true">@Ui.Initials(Model.VisitorName)</div> }
+    <dl class="kv">
+        <dt>Name</dt><dd>@Model.VisitorName</dd>
+        <dt>Mobile</dt><dd>@Model.Mobile</dd>
+        <dt>Purpose</dt><dd>@Model.Purpose</dd>
+        <dt>Visiting</dt><dd>@Model.Resident.FlatNo</dd>
+        <dt>Valid till</dt><dd>@Ui.Dt(Model.ValidTill)</dd>
+    </dl>
+    <img class="qr" src="@Url.Action("Qr", new { id = Model.Id })" alt="QR code for @Model.VisitorCode" />
+    <div class="pass-id">Visitor ID: @Model.VisitorCode</div>
+    <div class="actions no-print" style="justify-content:center">
+        <a class="btn ok" href="https://wa.me/?text=@share" target="_blank" rel="noopener">@Html.Icon("chat")Share pass</a>
+        <button class="btn primary" type="button" onclick="window.print()">@Html.Icon("printer")Print pass</button>
+        <a class="btn ghost" asp-action="Details" asp-route-id="@Model.Id">Back</a>
+    </div>
+</div>

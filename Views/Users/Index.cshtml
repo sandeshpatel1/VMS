@@ -1,0 +1,19 @@
+@model List<AppUser>
+@{ ViewData["Title"] = "Users and roles"; }
+<div class="page-head"><h1>Users and roles</h1><a class="btn primary" asp-action="Create">@Html.Icon("plus")Add user</a></div>
+<div class="list">
+@foreach (var u in Model)
+{
+    <div class="row">
+        <div class="avatar" aria-hidden="true">@Ui.Initials(u.FullName)</div>
+        <div class="row-main">
+            <strong>@u.FullName</strong>
+            <span>@(u.Username + ", " + u.Role + (u.Resident == null ? "" : ", flat " + u.Resident.FlatNo))</span>
+        </div>
+        <div class="row-end">
+            <span class="pill @(u.IsActive ? "ok" : "muted")">@(u.IsActive ? "Active" : "Off")</span>
+            <a class="btn ghost sm" asp-action="Edit" asp-route-id="@u.Id">Edit</a>
+        </div>
+    </div>
+}
+</div>

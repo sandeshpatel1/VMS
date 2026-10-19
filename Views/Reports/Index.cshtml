@@ -1,0 +1,53 @@
+@model ReportVM
+@{
+    ViewData["Title"] = "Reports";
+    int max(IEnumerable<int> xs) => xs.Any() ? xs.Max() : 1;
+}
+<div class="page-head">
+    <h1>Reports</h1>
+    <a class="btn ghost" asp-action="Export" asp-route-from="@Model.From.ToString("yyyy-MM-dd")" asp-route-to="@Model.To.ToString("yyyy-MM-dd")">@Html.Icon("download")Export CSV</a>
+</div>
+<form method="get" class="filters" style="grid-template-columns:1fr 1fr auto">
+    <div class="field"><label for="from">From</label><input id="from" type="date" name="from" value="@Model.From.ToString("yyyy-MM-dd")" /></div>
+    <div class="field"><label for="to">To</label><input id="to" type="date" name="to" value="@Model.To.ToString("yyyy-MM-dd")" /></div>
+    <button class="btn primary" type="submit" style="align-self:end">Show report</button>
+</form>
+
+<div class="stats">
+    <div class="stat"><b>@Model.Rows.Count</b><span>Visitors registered</span></div>
+    <div class="stat"><b>@Model.Rows.Count(r => r.Status == VisitStatus.CheckedIn || r.Status == VisitStatus.CheckedOut)</b><span>Entered</span></div>
+    <div class="stat"><b>@Model.Rows.Count(r => r.Status == VisitStatus.Rejected)</b><span>Rejected</span></div>
+    <div class="stat"><b>@Model.Rows.Count(r => r.Status == VisitStatus.CheckedIn)</b><span>Still inside</span></div>
+</div>
+
+<div class="two">
+    <div class="card"><h2>By purpose</h2><div class="bars" style="margin-top:.8rem">
+        @{ var maxP = max(Model.ByPurpose.Values); }
+        @foreach (var kv in Model.ByPurpose)
+        {
+            <div class="bar-row"><span>@kv.Key</span><div class="bar-track"><div class="bar-fill" style="width:@((kv.Value * 100 / maxP))%"></div></div><b>@kv.Value</b></div>
+        }
+        @if (!Model.ByPurpose.Any()) { <p class="muted">No visits in this period.</p> }
+    </div></div>
+    <div class="card"><h2>By day</h2><div class="bars" style="margin-top:.8rem">
+        @{ var maxD = max(Model.ByDay.Values); }
+        @foreach (var kv in Model.ByDay)
+        {
+            <div class="bar-row"><span>@kv.Key.ToString("dd MMM")</span><div class="bar-track"><div class="bar-fill" style="width:@((kv.Value * 100 / maxD))%"></div></div><b>@kv.Value</b></div>
+        }
+        @if (!Model.ByDay.Any()) { <p class="muted">No visits in this period.</p> }
+    </div></div>
+</div>
+
+<div class="section-title"><h2>All visits</h2></div>
+<div class="card table-wrap">
+    <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Flat</th><th>Purpose</th><th>Status</th><th>Registered</th><th>In</th><th>Out</th></tr></thead>
+        <tbody>
+        @foreach (var v in Model.Rows)
+        {
+            <tr><td><a asp-controller="Visitors" asp-action="Details" asp-route-id="@v.Id">@v.VisitorCode</a></td><td>@v.VisitorName</td><td>@v.Resident.FlatNo</td><td>@v.Purpose</td><td><partial name="_Status" model="v.Status" /></td><td>@Ui.Dt(v.CreatedAt)</td><td>@Ui.Tm(v.InTime)</td><td>@Ui.Tm(v.OutTime)</td></tr>
+        }
+        </tbody>
+    </table>
+</div>

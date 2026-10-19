@@ -1,0 +1,9 @@
+@model Visitor
+@if (!string.IsNullOrEmpty(Model.PhotoPath))
+{
+    <img class="avatar" src="@Model.PhotoPath" alt="" />
+}
+else
+{
+    <div class="avatar" aria-hidden="true">@Ui.Initials(Model.VisitorName)</div>
+}

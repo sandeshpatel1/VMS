@@ -1,0 +1,13 @@
+@model Resident
+@{ ViewData["Title"] = Model.Id == 0 ? "Add resident" : "Edit resident"; }
+<div class="page-head"><h1>@ViewData["Title"]</h1></div>
+<form asp-action="Save" method="post" class="card form narrow">
+    <div asp-validation-summary="ModelOnly" class="form-error"></div>
+    <input asp-for="Id" type="hidden" />
+    <div class="field"><label asp-for="FlatNo"></label><input asp-for="FlatNo" autocomplete="off" placeholder="A-501" /><span asp-validation-for="FlatNo"></span></div>
+    <div class="field"><label asp-for="FullName"></label><input asp-for="FullName" autocomplete="off" /><span asp-validation-for="FullName"></span></div>
+    <div class="field"><label asp-for="Mobile"></label><input asp-for="Mobile" type="tel" inputmode="numeric" maxlength="10" /><span asp-validation-for="Mobile"></span></div>
+    <div class="field"><label asp-for="Email"></label><input asp-for="Email" type="email" placeholder="Optional" /><span asp-validation-for="Email"></span></div>
+    <label class="check"><input asp-for="IsActive" type="checkbox" /> Active resident</label>
+    <div class="actions"><button class="btn primary" type="submit">Save resident</button><a class="btn ghost" asp-action="Index">Cancel</a></div>
+</form>

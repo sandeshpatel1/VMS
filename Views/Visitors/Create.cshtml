@@ -1,0 +1,63 @@
+@model VisitorCreateVM
+@{ ViewData["Title"] = "New visitor"; }
+<div class="page-head"><h1>New visitor</h1></div>
+
+<form asp-action="Create" method="post" class="card form wide">
+    <div asp-validation-summary="ModelOnly" class="form-error"></div>
+
+    <div class="field">
+        <span class="lbl">Visitor photo</span>
+        <div class="photo-field">
+            <div class="photo-box">
+                <img id="photoPreview" alt="Visitor photo preview" hidden />
+                <span id="photoEmpty">No photo yet</span>
+            </div>
+            <div class="actions" style="margin:0">
+                <button type="button" class="btn ghost" id="openCamera">@Html.Icon("camera")Capture photo</button>
+                <label class="btn ghost" for="photoFile">Upload photo</label>
+                <input type="file" id="photoFile" accept="image/*" hidden />
+                <button type="button" class="btn ghost" id="photoClear" hidden>Remove</button>
+            </div>
+        </div>
+        <input asp-for="PhotoData" type="hidden" />
+        <span asp-validation-for="PhotoData"></span>
+        <small class="hint">Optional. The photo is stored with the visitor pass.</small>
+    </div>
+
+    <div class="two">
+        <div class="field"><label asp-for="VisitorName"></label><input asp-for="VisitorName" autocomplete="off" placeholder="Enter visitor name" /><span asp-validation-for="VisitorName"></span></div>
+        <div class="field"><label asp-for="Mobile"></label><input asp-for="Mobile" type="tel" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="10-digit mobile number" /><span asp-validation-for="Mobile"></span></div>
+    </div>
+
+    <div class="field">
+        <label asp-for="Purpose"></label>
+        <select asp-for="Purpose" asp-items="@(new SelectList(Lists.Purposes))"><option value="">Select purpose</option></select>
+        <span asp-validation-for="Purpose"></span>
+    </div>
+
+    <div class="field">
+        <label asp-for="ResidentId"></label>
+        <label class="search">@Html.Icon("search")<input type="search" data-filter-select="#ResidentId" placeholder="Type a flat number or name to narrow the list" aria-label="Filter residents" /></label>
+        <select asp-for="ResidentId" asp-items="@((IEnumerable<SelectListItem>)ViewBag.Residents)"><option value="">Select resident</option></select>
+        <span asp-validation-for="ResidentId"></span>
+    </div>
+
+    <div class="field"><label asp-for="ExpectedTime"></label><input asp-for="ExpectedTime" type="datetime-local" /><span asp-validation-for="ExpectedTime"></span></div>
+    <div class="field"><label asp-for="Remarks"></label><textarea asp-for="Remarks" placeholder="Anything the resident should know (optional)"></textarea><span asp-validation-for="Remarks"></span></div>
+
+    <div class="actions"><button class="btn primary" type="submit">Register visitor</button><a class="btn ghost" asp-action="Index">Cancel</a></div>
+</form>
+
+<dialog class="cam" id="cameraDlg" aria-label="Capture visitor photo">
+    <div class="cam-view">
+        <video id="camVideo" autoplay playsinline muted></video>
+        <img id="camShot" alt="Captured photo" hidden />
+        <canvas id="camCanvas" hidden></canvas>
+    </div>
+    <div class="cam-bar">
+        <button type="button" class="btn primary" id="camSnap">@Html.Icon("camera")Take photo</button>
+        <button type="button" class="btn ghost" id="camRetake" hidden>Retake</button>
+        <button type="button" class="btn primary" id="camUse" hidden>Use photo</button>
+        <button type="button" class="btn ghost" id="camCancel">Cancel</button>
+    </div>
+</dialog>

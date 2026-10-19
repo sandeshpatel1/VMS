@@ -1,0 +1,8 @@
+@model string
+@{ ViewData["Title"] = "Something went wrong"; }
+<div class="center-card">
+    <h1>Something went wrong</h1>
+    <p class="muted">The page could not be shown. Go back and try again. If it keeps happening, tell the society admin.</p>
+    <p class="muted small">Reference: @Model</p>
+    <a class="btn primary" asp-controller="Home" asp-action="Index">Back to dashboard</a>
+</div>

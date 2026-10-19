@@ -1,0 +1,127 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = DwaarixVMS
+build_property.RootNamespace = DwaarixVMS
+build_property.ProjectDir = F:\Sandesh\DwaarixVMS\DwaarixVMS\DwaarixVMS\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = F:\Sandesh\DwaarixVMS\DwaarixVMS\DwaarixVMS
+build_property._RazorSourceGeneratorDebug = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Account/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Deliveries/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVsaXZlcmllc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Deliveries/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGVsaXZlcmllc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Emergency/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1lcmdlbmN5XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Notifications/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/PreApprovals/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlQXBwcm92YWxzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/PreApprovals/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlQXBwcm92YWxzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Reports/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Residents/Form.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzaWRlbnRzXEZvcm0uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Residents/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVzaWRlbnRzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Shared/_Avatar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdmF0YXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Shared/_Sprite.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TcHJpdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Shared/_Status.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TdGF0dXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Shared/_ThemeToggle.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9UaGVtZVRvZ2dsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Users/Form.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Users/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Visitors/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlzaXRvcnNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Visitors/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlzaXRvcnNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Visitors/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlzaXRvcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/Visitors/Pass.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmlzaXRvcnNcUGFzcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Sandesh/DwaarixVMS/DwaarixVMS/DwaarixVMS/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 

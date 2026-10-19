@@ -1,0 +1,27 @@
+@model LoginVM
+@{ ViewData["Title"] = "Sign in"; }
+<div class="login">
+    <div class="login-card">
+        <div class="logo"><span class="brand-mark lg">D</span><span class="logo-word">Dwaarix</span></div>
+        <p class="tagline">Smart society visitor management</p>
+
+        <form asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="form-error"></div>
+            <div class="field">
+                <label asp-for="Username">Username</label>
+                <input asp-for="Username" autocomplete="username" autofocus placeholder="Enter username" />
+                <span asp-validation-for="Username"></span>
+            </div>
+            <div class="field">
+                <label asp-for="Password">Password</label>
+                <div class="pw">
+                    <input asp-for="Password" autocomplete="current-password" placeholder="Enter password" />
+                    <button type="button" class="pw-toggle" data-toggle-pw="#Password">Show</button>
+                </div>
+                <span asp-validation-for="Password"></span>
+            </div>
+            <label class="check"><input asp-for="RememberMe" type="checkbox" /> Keep me signed in</label>
+            <button class="btn primary block" type="submit">Sign in</button>
+        </form>
+    </div>
+</div>

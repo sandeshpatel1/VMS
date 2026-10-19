@@ -1,0 +1,53 @@
+@model List<PreApproval>
+@{
+    ViewData["Title"] = "Pre-approved visitors";
+    var isStaff = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Watchman);
+    var now = DateTime.Now;
+    bool all = ViewBag.All == true;
+}
+<div class="page-head">
+    <h1>Pre-approved visitors</h1>
+    <a class="btn primary" asp-action="Create">@Html.Icon("plus")Add pre-approval</a>
+</div>
+
+<form method="get" class="filters" style="grid-template-columns:1fr auto auto">
+    <label class="search">@Html.Icon("search")<input type="search" name="q" value="@ViewBag.Q" placeholder="Search by name, mobile, flat or access code" aria-label="Search pre-approvals" /></label>
+    <label class="check"><input type="checkbox" name="all" value="true" checked="@all" /> Include expired</label>
+    <button class="btn ghost" type="submit">Apply</button>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="card empty"><p>No pre-approved visitors yet.</p><a class="btn primary" asp-action="Create">Add one</a></div>
+}
+else
+{
+    <div class="list">
+    @foreach (var p in Model)
+    {
+        var expired = p.Status == "Active" && p.ValidTill < now;
+        var label = expired ? "Expired" : p.Status;
+        var cls = p.Status == "Active" && !expired ? "ok" : p.Status == "Cancelled" ? "bad" : "muted";
+        var canEnter = isStaff && p.Status == "Active" && p.ValidFrom <= now && p.ValidTill >= now;
+        <div class="row">
+            <div class="avatar" aria-hidden="true">@Ui.Initials(p.VisitorName)</div>
+            <div class="row-main">
+                <strong>@p.Category: @p.VisitorName</strong>
+                <span>Flat @p.Resident.FlatNo, @p.Mobile</span>
+                <span>@("Valid till " + Ui.Dt(p.ValidTill) + (p.IsRecurring ? ", multiple entries" : ""))</span>
+            </div>
+            <div class="row-end"><span class="pill @cls">@label</span><span class="code">@p.AccessCode</span></div>
+            @if (p.Status == "Active" && !expired)
+            {
+                <div class="row-actions">
+                    @if (canEnter)
+                    {
+                        <form asp-action="CheckIn" method="post"><input type="hidden" name="id" value="@p.Id" /><button class="btn ok sm" type="submit">@Html.Icon("check")Check in</button></form>
+                    }
+                    <form asp-action="Cancel" method="post" data-confirm="Cancel this pre-approval?"><input type="hidden" name="id" value="@p.Id" /><button class="btn danger sm" type="submit">Cancel</button></form>
+                </div>
+            }
+        </div>
+    }
+    </div>
+}

@@ -1,0 +1,52 @@
+@model EmergencyVM
+@{
+    ViewData["Title"] = "Emergency";
+    var alerts = (List<Emergency>)ViewBag.Alerts;
+    var isStaff = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Watchman);
+}
+<div class="page-head"><div><h1>Emergency</h1><p class="sub">An alert reaches every resident and guard right away. Call the emergency services yourself as well.</p></div></div>
+
+<form asp-action="Raise" method="post" class="card form wide" data-confirm="Send this emergency alert to everyone?">
+    <div asp-validation-summary="ModelOnly" class="form-error"></div>
+    <div class="field">
+        <label asp-for="Type">What kind of emergency is it?</label>
+        <select asp-for="Type" asp-items="@(new SelectList(Lists.EmergencyTypes))"><option value="">Select type</option></select>
+        <span asp-validation-for="Type"></span>
+    </div>
+    <div class="field">
+        <label asp-for="Message">Where and what is happening?</label>
+        <textarea asp-for="Message" placeholder="Example: Smoke in the B wing parking, near the lift"></textarea>
+        <span asp-validation-for="Message"></span>
+    </div>
+    <div class="actions"><button class="btn danger" type="submit">@Html.Icon("alert")Send emergency alert</button></div>
+</form>
+
+<div class="section-title"><h2>Recent alerts</h2></div>
+@if (!alerts.Any())
+{
+    <div class="card empty"><p>No alerts have been raised.</p></div>
+}
+else
+{
+    <div class="list">
+    @foreach (var a in alerts)
+    {
+        <div class="row">
+            <div class="avatar" style="@(a.IsResolved ? "" : "background:var(--bad-bg);color:var(--bad)")">@Html.Icon("alert")</div>
+            <div class="row-main">
+                <strong>@a.Type</strong>
+                <span>@a.Message</span>
+                <span>Raised by @a.RaisedBy.FullName at @Ui.Dt(a.RaisedAt)</span>
+            </div>
+            <div class="row-end">
+                @if (a.IsResolved) { <span class="pill ok">Resolved</span><span>@Ui.Tm(a.ResolvedAt)</span> }
+                else { <span class="pill bad">Active</span> }
+            </div>
+            @if (isStaff && !a.IsResolved)
+            {
+                <div class="row-actions"><form asp-action="Resolve" method="post"><input type="hidden" name="id" value="@a.Id" /><button class="btn ok sm" type="submit">@Html.Icon("check")Mark resolved</button></form></div>
+            }
+        </div>
+    }
+    </div>
+}

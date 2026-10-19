@@ -1,0 +1,51 @@
+@model VisitorListVM
+@{
+    ViewData["Title"] = "Visitor history";
+    var isStaff = User.IsInRole(Roles.Admin) || User.IsInRole(Roles.Watchman);
+}
+<div class="page-head">
+    <h1>Visitor history</h1>
+    @if (isStaff) { <a class="btn primary" asp-action="Create">@Html.Icon("user-plus")New visitor</a> }
+</div>
+
+<form method="get" class="filters">
+    <label class="search">@Html.Icon("search")<input type="search" name="q" value="@Model.Q" placeholder="Search by name, mobile, flat or ID" aria-label="Search visitors" /></label>
+    <select name="status" aria-label="Filter by status">
+        <option value="">All statuses</option>
+        @foreach (var s in VisitStatus.All)
+        {
+            <option value="@s" selected="@(Model.Status == s)">@Ui.StatusLabel(s)</option>
+        }
+    </select>
+    <input type="date" name="date" value="@(Model.Date?.ToString("yyyy-MM-dd"))" aria-label="Filter by date" />
+    <button class="btn ghost" type="submit">Apply</button>
+</form>
+
+@if (!Model.Items.Any())
+{
+    <div class="card empty">
+        <p>No visitors match these filters.</p>
+        @if (isStaff) { <a class="btn primary" asp-action="Create">Register a visitor</a> }
+    </div>
+}
+else
+{
+    <div class="list">
+    @foreach (var v in Model.Items)
+    {
+        <a class="row" asp-action="Details" asp-route-id="@v.Id">
+            <partial name="_Avatar" model="v" />
+            <div class="row-main">
+                <strong>@v.VisitorName</strong>
+                <span>Flat @v.Resident.FlatNo, @v.Purpose</span>
+                <span>@v.VisitorCode</span>
+            </div>
+            <div class="row-end">
+                <span>@v.CreatedAt.ToString("dd MMM yyyy")<br />@Ui.Tm(v.CreatedAt)</span>
+                <partial name="_Status" model="v.Status" />
+            </div>
+        </a>
+    }
+    </div>
+    <p class="muted small" style="margin-top:.8rem">Showing the latest @Model.Items.Count entries.</p>
+}

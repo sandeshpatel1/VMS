@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\js\\reports.js",
+      "PackagePath": "staticwebassets\\js\\reports.js"
+    },
+    {
       "Id": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

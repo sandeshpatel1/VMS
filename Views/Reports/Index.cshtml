@@ -1,53 +1,135 @@
-@model ReportVM
 @{
     ViewData["Title"] = "Reports";
-    int max(IEnumerable<int> xs) => xs.Any() ? xs.Max() : 1;
+
+    var purposes = (string[])ViewBag.Purposes;
+
+    var statuses = (string[])ViewBag.Statuses;
+
+    var flats = (List<string>)ViewBag.Flats;
+
+    var staff = (List<SelectListItem>)ViewBag.Staff;
+
+    var presets = new (string Key, string Text)[]
+
+    {
+        ("today", "Today"), ("7d", "7 days"), ("30d", "30 days"), ("month", "This month"),
+        ("lastmonth", "Last month"), ("90d", "90 days"), ("custom", "Custom")
+
+    };
 }
 <div class="page-head">
-    <h1>Reports</h1>
-    <a class="btn ghost" asp-action="Export" asp-route-from="@Model.From.ToString("yyyy-MM-dd")" asp-route-to="@Model.To.ToString("yyyy-MM-dd")">@Html.Icon("download")Export CSV</a>
-</div>
-<form method="get" class="filters" style="grid-template-columns:1fr 1fr auto">
-    <div class="field"><label for="from">From</label><input id="from" type="date" name="from" value="@Model.From.ToString("yyyy-MM-dd")" /></div>
-    <div class="field"><label for="to">To</label><input id="to" type="date" name="to" value="@Model.To.ToString("yyyy-MM-dd")" /></div>
-    <button class="btn primary" type="submit" style="align-self:end">Show report</button>
-</form>
-
-<div class="stats">
-    <div class="stat"><b>@Model.Rows.Count</b><span>Visitors registered</span></div>
-    <div class="stat"><b>@Model.Rows.Count(r => r.Status == VisitStatus.CheckedIn || r.Status == VisitStatus.CheckedOut)</b><span>Entered</span></div>
-    <div class="stat"><b>@Model.Rows.Count(r => r.Status == VisitStatus.Rejected)</b><span>Rejected</span></div>
-    <div class="stat"><b>@Model.Rows.Count(r => r.Status == VisitStatus.CheckedIn)</b><span>Still inside</span></div>
+    <div>
+        <h1>Reports</h1>
+        <p class="sub" id="rpRange">Loading...</p>
+    </div>
+    <div class="actions" style="margin:0">
+        <a class="btn ghost" id="rpExport" href="@Url.Action("Export")">@Html.Icon("download")Export CSV</a>
+        <button class="btn ghost" type="button" id="rpPrint">@Html.Icon("printer")Print</button>
+    </div>
 </div>
 
-<div class="two">
-    <div class="card"><h2>By purpose</h2><div class="bars" style="margin-top:.8rem">
-        @{ var maxP = max(Model.ByPurpose.Values); }
-        @foreach (var kv in Model.ByPurpose)
+<section class="card rp-filters" aria-label="Report filters">
+    <div class="rp-presets" role="group" aria-label="Date range">
+        @foreach (var pr in presets)
+
         {
-            <div class="bar-row"><span>@kv.Key</span><div class="bar-track"><div class="bar-fill" style="width:@((kv.Value * 100 / maxP))%"></div></div><b>@kv.Value</b></div>
+            <button type="button" data-preset="@pr.Key" aria-pressed="false">@pr.Text</button>
         }
-        @if (!Model.ByPurpose.Any()) { <p class="muted">No visits in this period.</p> }
-    </div></div>
-    <div class="card"><h2>By day</h2><div class="bars" style="margin-top:.8rem">
-        @{ var maxD = max(Model.ByDay.Values); }
-        @foreach (var kv in Model.ByDay)
-        {
-            <div class="bar-row"><span>@kv.Key.ToString("dd MMM")</span><div class="bar-track"><div class="bar-fill" style="width:@((kv.Value * 100 / maxD))%"></div></div><b>@kv.Value</b></div>
-        }
-        @if (!Model.ByDay.Any()) { <p class="muted">No visits in this period.</p> }
-    </div></div>
+    </div>
+    <div class="rp-custom" id="rpCustom" hidden>
+        <div class="field"><label for="rpFrom">From</label><input id="rpFrom" type="date" /></div>
+        <div class="field"><label for="rpTo">To</label><input id="rpTo" type="date" /></div>
+    </div>
+    <div class="rp-selects">
+        <div class="field">
+            <label for="rpPurposeSel">Purpose</label>
+            <select id="rpPurposeSel" data-f="purpose"><option value="">All purposes</option>@foreach (var x in purposes)
+                {
+                    <option value="@x">@x</option>
+                }</select>
+        </div>
+        <div class="field">
+            <label for="rpStatusSel">Status</label>
+            <select id="rpStatusSel" data-f="status"><option value="">All statuses</option>@foreach (var x in statuses)
+                {
+                    <option value="@x">@Ui.StatusLabel(x)</option>
+                }</select>
+        </div>
+        <div class="field">
+            <label for="rpFlatSel">Flat</label>
+            <select id="rpFlatSel" data-f="flat"><option value="">All flats</option>@foreach (var x in flats)
+                {
+                    <option value="@x">@x</option>
+                }</select>
+        </div>
+        <div class="field">
+            <label for="rpStaffSel">Logged by</label>
+            <select id="rpStaffSel" data-f="loggedBy"><option value="">Everyone</option>@foreach (var x in staff)
+                {
+                    <option value="@x.Value">@x.Text</option>
+                }</select>
+        </div>
+        <div class="field">
+            <label for="rpSearch">Search</label>
+            <input id="rpSearch" type="search" data-f="q" placeholder="Name, mobile or visitor ID" autocomplete="off" />
+        </div>
+    </div>
+    <div class="rp-bar">
+        <label class="check"><input type="checkbox" id="rpCompare" checked /> Compare with the previous period</label>
+        <div class="rp-chips" id="rpChips" aria-label="Active filters"></div>
+        <button type="button" class="btn ghost sm" id="rpReset">Reset filters</button>
+    </div>
+</section>
+
+<div id="rpApp" data-url="@Url.Action("Data")" data-export="@Url.Action("Export")" data-details="@Url.Action("Details", "Visitors")" aria-live="polite">
+    <p class="rp-error" id="rpError" role="alert" hidden></p>
+    <section class="rp-kpis" id="rpKpis" aria-label="Headline numbers"></section>
+
+    <section class="rp-grid">
+        <article class="card rp-wide">
+            <header class="rp-h"><h2>Visitors over time</h2><span class="hint" id="rpGran"></span></header>
+            <div id="rpLine" class="rp-line"></div>
+        </article>
+        <article class="card"><header class="rp-h"><h2>By purpose</h2><span class="hint">Select a bar to filter</span></header><div id="rpPurpose"></div></article>
+        <article class="card"><header class="rp-h"><h2>Visit funnel</h2><span class="hint">From the gate to checkout</span></header><div id="rpFunnel"></div></article>
+        <article class="card rp-wide"><header class="rp-h"><h2>When visitors arrive</h2><span class="hint">Day of week by hour</span></header><div id="rpHeat" class="rp-heat"></div></article>
+        <article class="card"><header class="rp-h"><h2>Busiest flats</h2><span class="hint">Select a flat to filter</span></header><div id="rpFlats"></div></article>
+        <article class="card"><header class="rp-h"><h2>Average stay</h2><span class="hint">By purpose</span></header><div id="rpStay"></div></article>
+        <article class="card"><header class="rp-h"><h2>Repeat visitors</h2><span class="hint">Select one to see all visits</span></header><div id="rpRepeat"></div></article>
+        <article class="card"><header class="rp-h"><h2>Security desk</h2><span class="hint">Entries logged by</span></header><div id="rpStaff"></div></article>
+        <article class="card"><header class="rp-h"><h2>Deliveries and alerts</h2></header><div id="rpOther"></div></article>
+    </section>
+
+    <section class="card rp-table">
+        <header class="rp-h">
+            <h2>All visits <span class="hint" id="rpCount"></span></h2>
+            <label class="search rp-tsearch">@Html.Icon("search")<input type="search" id="rpTableSearch" placeholder="Search these results" aria-label="Search these results" /></label>
+        </header>
+        <div class="table-wrap">
+            <table id="rpTable">
+                <thead>
+                    <tr>
+                        <th data-sort="code">ID</th>
+                        <th data-sort="name">Visitor</th>
+                        <th data-sort="flat">Flat</th>
+                        <th data-sort="purpose">Purpose</th>
+                        <th data-sort="status">Status</th>
+                        <th data-sort="created">Registered</th>
+                        <th data-sort="inTime">In</th>
+                        <th data-sort="outTime">Out</th>
+                        <th data-sort="stay">Stay</th>
+                        <th data-sort="loggedBy">Logged by</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="rp-pager"><span class="hint" id="rpPageInfo"></span><div><button type="button" class="btn ghost sm" id="rpPrev">Previous</button> <button type="button" class="btn ghost sm" id="rpNext">Next</button></div></div>
+    </section>
 </div>
 
-<div class="section-title"><h2>All visits</h2></div>
-<div class="card table-wrap">
-    <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Flat</th><th>Purpose</th><th>Status</th><th>Registered</th><th>In</th><th>Out</th></tr></thead>
-        <tbody>
-        @foreach (var v in Model.Rows)
-        {
-            <tr><td><a asp-controller="Visitors" asp-action="Details" asp-route-id="@v.Id">@v.VisitorCode</a></td><td>@v.VisitorName</td><td>@v.Resident.FlatNo</td><td>@v.Purpose</td><td><partial name="_Status" model="v.Status" /></td><td>@Ui.Dt(v.CreatedAt)</td><td>@Ui.Tm(v.InTime)</td><td>@Ui.Tm(v.OutTime)</td></tr>
-        }
-        </tbody>
-    </table>
-</div>
+<div class="rp-tip" id="rpTip" hidden></div>
+
+@section Scripts {
+     <script src="~/js/reports.js" asp-append-version="true"></script>
+}

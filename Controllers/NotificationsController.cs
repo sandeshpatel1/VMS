@@ -17,6 +17,17 @@ public class NotificationsController : AppController
         return View(items);
     }
 
+    /// <summary>Small HTML fragment for the top-bar notification tray (latest 5).</summary>
+    [HttpGet]
+    public async Task<IActionResult> Tray()
+    {
+        var uid = User.UserId();
+        var items = await Db.Notifications.Where(n => n.UserId == uid)
+            .OrderByDescending(n => n.CreatedAt).Take(5).ToListAsync();
+        ViewBag.Unread = await Db.Notifications.CountAsync(n => n.UserId == uid && !n.IsRead);
+        return PartialView("_Tray", items);
+    }
+
     [HttpPost]
     public async Task<IActionResult> MarkAllRead()
     {
@@ -24,6 +35,7 @@ public class NotificationsController : AppController
         var unread = await Db.Notifications.Where(n => n.UserId == uid && !n.IsRead).ToListAsync();
         foreach (var n in unread) n.IsRead = true;
         await Db.SaveChangesAsync();
+        if (Request.Headers["X-Requested-With"] == "fetch") return NoContent();   // called from the tray
         return RedirectToAction(nameof(Index));
     }
 

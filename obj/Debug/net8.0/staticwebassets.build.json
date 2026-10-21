@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "zrA7DLSLRjjGyEkw8IKTHSsyYvlYqXbyTTMnaZATwOs=",
+  "Hash": "KYcxq1Ik8qiDFgl020y65FPbEZ9oSvNDJX3C07uSklg=",
   "Source": "DwaarixVMS",
   "BasePath": "_content/DwaarixVMS",
   "Mode": "Default",
@@ -34,6 +34,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\js\\reports.js",
+      "SourceId": "DwaarixVMS",
+      "SourceType": "Discovered",
+      "ContentRoot": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\",
+      "BasePath": "_content/DwaarixVMS",
+      "RelativePath": "js/reports.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\reports.js"
     },
     {
       "Identity": "F:\\Sandesh\\DwaarixVMS\\DwaarixVMS\\DwaarixVMS\\wwwroot\\js\\site.js",

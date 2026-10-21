@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DwaarixVMS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7bfc70aaba2fed55fa296a93fd15791dcbb3bf56")]
 [assembly: System.Reflection.AssemblyProductAttribute("DwaarixVMS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DwaarixVMS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

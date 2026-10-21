@@ -1,0 +1,57 @@
+@model List<Notification>
+@{
+    int unread = ViewBag.Unread;
+    string Tone(string type) => type switch
+    {
+        "visitor-in" or "visitor-approved" or "pre-approved" => "ok",
+        "visitor-out" or "visitor-rejected" or "visitor-cancelled" or "emergency" => "bad",
+        "visitor-pending" => "warn",
+        _ => "info"
+    };
+    string Ago(DateTime when)
+    {
+        var span = DateTime.Now - when;
+        if (span.TotalMinutes < 1) return "Just now";
+        if (span.TotalMinutes < 60) return (int)span.TotalMinutes + " min ago";
+        if (span.TotalHours < 24) return (int)span.TotalHours + " hr ago";
+        if (span.TotalDays < 7)
+        {
+            var days = (int)span.TotalDays;
+            return days + (days == 1 ? " day ago" : " days ago");
+        }
+        return when.ToString("dd MMM");
+    }
+}
+<div class="tray-head">
+    <strong>Notifications</strong>
+    @if (unread > 0)
+    {
+        <form asp-controller="Notifications" asp-action="MarkAllRead" method="post" data-tray-clear>
+            <button class="tray-link" type="submit">Mark all read</button>
+        </form>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="tray-empty">You are all caught up.</div>
+}
+else
+{
+    <ul class="tray-list">
+        @foreach (var n in Model)
+        {
+            <li class="tray-item @(n.IsRead ? "" : "unread")">
+                <a asp-controller="Notifications" asp-action="Index">
+                    <i class="tdot @Tone(n.Type)" aria-hidden="true"></i>
+                    <div>
+                        <strong>@n.Title</strong>
+                        <span>@n.Message</span>
+                        <time datetime="@n.CreatedAt.ToString("s")">@Ago(n.CreatedAt)</time>
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+}
+<a class="tray-foot" asp-controller="Notifications" asp-action="Index">View all</a>

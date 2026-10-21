@@ -72,3 +72,4 @@ F:\Sandesh\DwaarixVMS\DwaarixVMS\DwaarixVMS\obj\Debug\net8.0\refint\DwaarixVMS.d
 F:\Sandesh\DwaarixVMS\DwaarixVMS\DwaarixVMS\obj\Debug\net8.0\DwaarixVMS.pdb
 F:\Sandesh\DwaarixVMS\DwaarixVMS\DwaarixVMS\obj\Debug\net8.0\DwaarixVMS.genruntimeconfig.cache
 F:\Sandesh\DwaarixVMS\DwaarixVMS\DwaarixVMS\obj\Debug\net8.0\ref\DwaarixVMS.dll
+F:\Sandesh\DwaarixVMS\DwaarixVMS\DwaarixVMS\obj\Debug\net8.0\DwaarixVMS.sourcelink.json
